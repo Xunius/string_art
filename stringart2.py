@@ -4,15 +4,14 @@
 
 
 
-IMG_FILE='people05.jpg'
-HOUGH_FILE='hough_data.npy'
+IMG_FILE='people05.JPG'
 
 IMG_WIDTH=300  # width of image to resize to
 N_POINTS=100   # NO of points on circle
 SIGMA=2        # Gaussian blur size
 LINE_WIDTH=2.4 # max line width
 DISK=2
-ANIMATE=True  # if True, create animation, a final plot otherwise
+ANIMATE=False  # if True, create animation, a final plot otherwise
 NLAYERS=10
 MIN_RATIO=0.5
 
@@ -24,9 +23,7 @@ import numpy as np
 from PIL import Image
 from PIL import ImageFilter
 from skimage import filters
-import plot
 import matplotlib.pyplot as plt
-from skimage.transform import hough_line_peaks as hlp
 
 
 
@@ -188,7 +185,6 @@ if __name__=='__main__':
     ys=R*np.sin(thetas)+img.shape[0]//2
 
     #---Get allowed Hough parameter space by circle lines----
-    #hough=np.load(HOUGH_FILE)
     circ_coords=np.where(circle>0)
 
     cy1=circ_coords[0].min()
@@ -219,7 +215,8 @@ if __name__=='__main__':
             p2=[xs[jj]-cx1,ys[jj]-cy1]
             lineidx=getLineByPoints(p1,p2).astype('int')
 
-            pidx=lineidx[:,1]*square.shape[1]+lineidx[:,0]
+            pidx=np.minimum(lineidx[:,1],square.shape[0]-1)*square.shape[1]+\
+                    np.minimum(lineidx[:,0],square.shape[1]-1)
             tmp=np.zeros(A.shape[0])
             tmp[pidx]=1.
             tmp=tmp.reshape(square.shape)
